@@ -198,58 +198,68 @@
     <script>
         const questions = [
             {
-                q: "1. Które z poniższych faktów o oceanach są prawdziwe?",
+                q: "1. Które z tych owoców rosną na drzewach?",
                 options: [
-                    "Ocean Spokojny jest większy niż wszystkie kontynenty razem wzięte",
-                    "W Morzu Martwym nie można utonąć ze względu na zasolenie",
-                    "Największa żywa struktura to Wielka Rafa Koralowa",
-                    "Najgłębszy punkt oceanów to Rów Mariański (prawie 11 km)"
-                ],
-                correct: [0, 1, 2, 3]
-            },
-            {
-                q: "2. Które z poniższych są stolicami europejskich państw?",
-                options: [
-                    "Barcelona",
-                    "Mediolan",
-                    "Lizbona",
-                    "Budapeszt"
-                ],
-                correct: [2, 3]
-            },
-            {
-                q: "3. Ile kontynentów jest na Ziemi?",
-                options: [
-                    "5",
-                    "6",
-                    "7",
-                    "8"
-                ],
-                correct: [2]
-            },
-            {
-                q: "4. Które z tych zwierząt są ssakami?",
-                options: [
-                    "Pingwin",
-                    "Wieloryb",
-                    "Delfin",
-                    "Rekin"
+                    "Truskawka",
+                    "Jabłko",
+                    "Gruszka",
+                    "Arbuz"
                 ],
                 correct: [1, 2]
             },
             {
-                q: "5. Która rzeka jest najdłuższa na świecie?",
+                q: "2. Które zwierzęta potrafią latać?",
                 options: [
-                    "Nil",
-                    "Amazonka",
-                    "Jangcy",
-                    "Missisipi"
+                    "Nietoperz",
+                    "Pingwin",
+                    "Struś",
+                    "Papuga"
                 ],
-                correct: [1]
+                correct: [0]
+            },
+            {
+                q: "3. Które z tych państw znajduje się w Europie?",
+                options: [
+                    "Norwegia",
+                    "Brazylia",
+                    "Turcja",
+                    "Australia"
+                ],
+                correct: [0, 1, 2]
+            },
+            {
+                q: "4. Które z tych są metalami?",
+                options: [
+                    "Miedź",
+                    "Siarka",
+                    "Węgiel",
+                    "Żelazo"
+                ],
+                correct: [0, 3]
+            },
+            {
+                q: "5. Które z tych są planetami skalistymi?",
+                options: [
+                    "Merkury",
+                    "Jowisz",
+                    "Saturn",
+                    "Mars"
+                ],
+                correct: [0, 3]
+            },
+            {
+                q: "6. Które z tych miast są stolicami?",
+                options: [
+                    "Nowy Jork",
+                    "Berlin",
+                    "Londyn",
+                    "Sydney"
+                ],
+                correct: [1, 2]
             }
         ];
 
-        let userAnswers = Array(5).fill(null).map(() => []);
+        let userAnswers = Array(6).fill(null).map(() => []);
 
         function createQuestions() {
             const container = document.getElementById('questions');
@@ -286,7 +296,7 @@
             const grid = document.getElementById('answerGrid');
             grid.innerHTML = '';
             
-            for (let i = 0; i < 20; i++) {
+            for (let i = 0; i < 24; i++) {
                 const cell = document.createElement('div');
                 cell.className = 'answer-cell';
                 cell.id = `cell-${i}`;
@@ -309,7 +319,7 @@
 
         function checkAnswers() {
             // Wyczyść poprzednie wyniki
-            for (let i = 0; i < 20; i++) {
+            for (let i = 0; i < 24; i++) {
                 const cell = document.getElementById(`cell-${i}`);
                 cell.classList.remove('correct', 'incorrect');
                 cell.textContent = '';
