@@ -1,379 +1,273 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Krzyżówka – Siłownia</title>
+<meta charset="UTF-8">
+<title>Krzyżówka – Siłownia</title>
 
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #e9eef5, #f7f9fc);
+  padding: 30px;
+}
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+h1 {
+  text-align: center;
+  font-weight: 700;
+  margin-bottom: 30px;
+}
 
-        h1 {
-            text-align: center;
-            color: white;
-            margin-bottom: 30px;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
+.container {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
 
-        .crossword-wrapper {
-            display: grid;
-            grid-template-columns: 350px 1fr;
-            gap: 30px;
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
+/* === KARTY === */
+.card {
+  background: #fff;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+}
 
-        .clue-group h3 {
-            color: #764ba2;
-            margin-bottom: 15px;
-            font-size: 1.3em;
-            border-bottom: 2px solid #764ba2;
-        }
+/* === GRID === */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(20, 38px);
+  grid-template-rows: repeat(20, 38px);
+  background: #111;
+  padding: 12px;
+  border-radius: 12px;
+}
 
-        .clue-item {
-            margin-bottom: 10px;
-            padding: 10px;
-            background: #f8f4ff;
-            border-radius: 8px;
-            display: flex;
-            gap: 10px;
-        }
+/* === POLA === */
+.cell {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  background: #ffffff;
+  border-radius: 6px;
+  border: 1px solid #d0d7e2;
+}
 
-        .clue-number { font-weight: bold; color: #764ba2; }
-        .crossword-grid {
-            display: grid;
-            gap: 2px;
-            background: #764ba2;
-            padding: 2px;
-            border-radius: 10px;
-            justify-content: center;
-        }
+.cell input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  background: transparent;
+  text-transform: uppercase;
+}
 
-        .cell {
-            width: 45px;
-            height: 45px;
-            background: white;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            aspect-ratio: 1;
-        }
+.cell input:focus {
+  background: #eef4ff;
+}
 
-        .cell.black { background: #764ba2; }
+/* === PUSTE === */
+.empty {
+  background: #0f172a;
+  border: none;
+}
 
-        .cell input {
-            width: 100%;
-            height: 100%;
-            border: none;
-            text-align: center;
-            font-size: 1.4em;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
+/* === NUMERKI === */
+.number {
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  font-size: 9px;
+  color: #64748b;
+}
 
-        .cell.correct input {
-            background: #d4edda;
-            color: #155724;
-        }
+/* === STANY === */
+.correct {
+  background: #dcfce7;
+}
 
-        .cell.incorrect input {
-            background: #f8d7da;
-            color: #721c24;
-        }
+.wrong {
+  background: #fee2e2;
+}
 
-        .cell-number {
-            position: absolute;
-            top: 2px;
-            left: 3px;
-            font-size: 0.7em;
-            font-weight: bold;
-            color: #764ba2;
-        }
+/* === PYTANIA === */
+.questions {
+  max-width: 340px;
+}
 
-        .check-btn {
-            margin-top: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 15px 50px;
-            border-radius: 10px;
-            font-size: 1.2em;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
+.questions h2 {
+  margin-top: 0;
+  font-size: 18px;
+}
 
-        .check-btn:hover {
-            transform: scale(1.05);
-        }
+.questions li {
+  margin-bottom: 8px;
+  color: #334155;
+}
 
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
+/* === BUTTONY === */
+button {
+  margin-top: 15px;
+  padding: 12px 26px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
 
-            h1 {
-                font-size: 1.8em;
-                margin-bottom: 20px;
-            }
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(37,99,235,.3);
+}
 
-            .crossword-wrapper {
-                grid-template-columns: 1fr;
-                padding: 20px;
-                gap: 20px;
-            }
+/* === OVERLAY === */
+#overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15,23,42,0.85);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
 
-            .cell {
-                width: 35px;
-                height: 35px;
-                min-width: 35px;
-                min-height: 35px;
-            }
+#overlay span {
+  color: white;
+  font-size: 140px;
+  font-weight: 700;
+  animation: pop 0.4s ease-out;
+}
 
-            .cell input {
-                font-size: 1.2em;
-            }
-
-            .check-btn {
-                width: 100%;
-                padding: 12px;
-            }
-
-            .crossword-grid {
-                overflow-x: auto;
-            }
-        }
-
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 1.5em;
-            }
-
-            .cell {
-                width: 30px;
-                height: 30px;
-                min-width: 30px;
-                min-height: 30px;
-            }
-
-            .cell input {
-                font-size: 1em;
-            }
-
-            .cell-number {
-                font-size: 0.6em;
-            }
-
-            .crossword-wrapper {
-                padding: 15px;
-            }
-
-            .clue-group h3 {
-                font-size: 1.1em;
-            }
-
-            .clue-item {
-                padding: 8px;
-                font-size: 0.9em;
-            }
-
-            .result-content {
-                padding: 40px 20px;
-            }
-
-            .big-one {
-                font-size: 120px;
-            }
-        }
-
-        .result-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.85);
-            justify-content: center;
-            align-items: center;
-        }
-
-        .result-overlay.show { display: flex; }
-
-        .result-content {
-            background: white;
-            padding: 60px;
-            border-radius: 20px;
-            text-align: center;
-        }
-
-        .big-one {
-            font-size: 200px;
-            font-weight: bold;
-            color: #4caf50;
-        }
-    </style>
+@keyframes pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+</style>
 </head>
 
 <body>
+
+<h1>Krzyżówka – Siłownia</h1>
+
 <div class="container">
-    <h1>🏋️ Krzyżówka – Siłownia</h1>
 
-    <div class="crossword-wrapper">
-        <div>
-            <div class="clue-group">
-                <h3>POZIOMO →</h3>
-                <div id="horizontalClues"></div>
-            </div>
-            <div class="clue-group">
-                <h3>PIONOWO ↓</h3>
-                <div id="verticalClues"></div>
-            </div>
-        </div>
+  <div class="card">
+    <div id="grid" class="grid"></div>
+    <button onclick="check()">Sprawdź</button>
+  </div>
 
-        <div>
-            <div class="crossword-grid" id="grid"></div>
-            <button class="check-btn" onclick="checkAnswers()">Sprawdź</button>
-        </div>
-    </div>
+  <div class="card questions">
+    <h2>Poziomo</h2>
+    <ol id="horizontal"></ol>
+
+    <h2>Pionowo</h2>
+    <ol id="vertical"></ol>
+  </div>
+
 </div>
 
-<div class="result-overlay" id="resultOverlay">
-    <div class="result-content">
-        <div class="big-one">💪</div>
-        <h2>Świetna robota! Forma rośnie!</h2>
-    </div>
+<!-- OVERLAY -->
+<div id="overlay">
+  <span>1</span>
 </div>
 
 <script>
-const gridSize = 10;
+const words = [
+  { word: "HANTLE", x: 6, y: 3, dir: "H", q: "Sprzęt do ćwiczeń siłowych trzymany w dłoniach" },
+  { word: "ŁAWKA", x: 7, y: 2, dir: "V", q: "Sprzęt do wyciskania sztangi" },
+  { word: "TRENING", x: 9, y: 3, dir: "V", q: "Zaplanowana sesja ćwiczeń fizycznych" },
+  { word: "PLECY", x: 11, y: 1, dir: "V", q: "Obszar ciała między karkiem a biodrami" },
+  { word: "BIEŻNIA", x: 8, y: 7, dir: "H", q: "Maszyna cardio do biegania" },
+  { word: "MASA", x: 14, y: 6, dir: "V", q: "Efekt budowany nadwyżką kalorii" },
+  { word: "SERIA", x: 14, y: 8, dir: "H", q: "Zestaw powtórzeń jednego ćwiczenia" },
+  { word: "DIETA", x: 17, y: 7, dir: "V", q: "Sposób odżywiania wspierający trening" },
+  { word: "SZTANGA", x: 4, y: 9, dir: "H", q: "Ciężar używany m.in. do martwego ciągu" },
+  { word: "PRZYSIADY", x: 5, y: 7, dir: "V", q: "Ćwiczenie wzmacniające nogi i pośladki" },
+  { word: "NOGI", x: 2, y: 12, dir: "H", q: "Dolna część ciała" },
+  { word: "FORMA", x: 3, y: 11, dir: "V", q: "Efekt regularnych treningów i diety" },
+  { word: "ŁAWKA", x: 7, y: 8, dir: "V", q: "Sprzęt treningowy używany do wyciskania" },
+  { word: "KLATA", x: 7, y: 11, dir: "H", q: "Potoczna nazwa mięśni piersiowych" },
+  { word: "ABS", x: 11, y: 11, dir: "V", q: "Mięśnie brzucha" }
+];
 
-const clues = {
-    horizontal: [
-        { num: 1, row: 0, col: 0, answer: "HANTLE", clue: "Sprzęt do ćwiczeń rąk" },
-        { num: 3, row: 2, col: 1, answer: "TRENING", clue: "Sesja ćwiczeń" },
-        { num: 5, row: 4, col: 0, answer: "CARDIO", clue: "Ćwiczenia na serce" },
-        { num: 7, row: 6, col: 2, answer: "MIĘŚNIE", clue: "Rosną po wysiłku" }
-    ],
-    vertical: [
-        { num: 1, row: 0, col: 0, answer: "BICEPS", clue: "Mięsień ramienia" },
-        { num: 2, row: 0, col: 3, answer: "DIETA", clue: "Podstawa formy" },
-        { num: 4, row: 2, col: 5, answer: "SERIA", clue: "Kilka powtórzeń" },
-        { num: 6, row: 4, col: 2, answer: "MASA", clue: "Budowana na siłowni" }
-    ]
-};
 
-let grid = [];
+const size = 20;
+const grid = Array.from({ length: size }, () => Array(size).fill(null));
+const gridEl = document.getElementById("grid");
 
-function initGrid() {
-    for (let i = 0; i < gridSize; i++) {
-        grid[i] = [];
-        for (let j = 0; j < gridSize; j++) {
-            grid[i][j] = { letter: '', number: '', black: true };
-        }
+words.forEach((w, index) => {
+  [...w.word].forEach((letter, i) => {
+    const x = w.dir === "H" ? w.x + i - 1 : w.x - 1;
+    const y = w.dir === "V" ? w.y + i - 1 : w.y - 1;
+    if (!grid[y][x]) grid[y][x] = [];
+    grid[y][x].push({ letter, index });
+  });
+});
+
+grid.forEach(row => {
+  row.forEach(cell => {
+    const div = document.createElement("div");
+    div.className = "cell";
+    if (!cell) {
+      div.classList.add("empty");
+    } else {
+      const input = document.createElement("input");
+      input.maxLength = 1;
+      input.dataset.solution = cell[0].letter;
+      input.addEventListener("input", () => {
+        input.value = input.value.toUpperCase();
+        autoCheck();
+      });
+      div.appendChild(input);
     }
+    gridEl.appendChild(div);
+  });
+});
 
-    clues.horizontal.forEach(word => {
-        for (let i = 0; i < word.answer.length; i++) {
-            grid[word.row][word.col + i] = {
-                letter: word.answer[i],
-                number: i === 0 ? word.num : '',
-                black: false
-            };
-        }
-    });
+words.forEach((w, i) => {
+  const li = document.createElement("li");
+  li.textContent = `${w.q} (${w.word.length})`;
+  document.getElementById(w.dir === "H" ? "horizontal" : "vertical").appendChild(li);
 
-    clues.vertical.forEach(word => {
-        for (let i = 0; i < word.answer.length; i++) {
-            const cell = grid[word.row + i][word.col];
-            cell.letter = word.answer[i];
-            cell.black = false;
-            if (!cell.number) cell.number = word.num;
-        }
-    });
+  const idx = (w.y - 1) * size + (w.x - 1);
+  const cell = gridEl.children[idx];
+  const num = document.createElement("div");
+  num.className = "number";
+  num.textContent = i + 1;
+  cell.appendChild(num);
+});
+
+function check() {
+  document.querySelectorAll(".cell").forEach(cell => {
+    const input = cell.querySelector("input");
+    if (!input) return;
+    cell.classList.remove("correct", "wrong");
+    if (!input.value) return;
+    cell.classList.add(input.value === input.dataset.solution ? "correct" : "wrong");
+  });
 }
 
-function renderGrid() {
-    const g = document.getElementById('grid');
-    g.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
-    g.style.width = 'fit-content';
-    g.style.margin = '0 auto';
-
-    for (let row = 0; row < gridSize; row++) {
-        for (let col = 0; col < gridSize; col++) {
-            const cell = grid[row][col];
-            const d = document.createElement('div');
-            d.className = 'cell' + (cell.black ? ' black' : '');
-
-            if (!cell.black) {
-                if (cell.number) {
-                    const n = document.createElement('span');
-                    n.className = 'cell-number';
-                    n.textContent = cell.number;
-                    d.appendChild(n);
-                }
-
-                const input = document.createElement('input');
-                input.maxLength = 1;
-                input.dataset.answer = cell.letter;
-                input.oninput = () => input.value = input.value.toUpperCase();
-                d.appendChild(input);
-            }
-            g.appendChild(d);
-        }
-    }
+function autoCheck() {
+  const inputs = [...document.querySelectorAll("input")];
+  const allCorrect = inputs.every(i => i.value === i.dataset.solution);
+  document.getElementById("overlay").style.display = allCorrect ? "flex" : "none";
 }
 
-function renderClues() {
-    const h = document.getElementById('horizontalClues');
-    const v = document.getElementById('verticalClues');
-
-    clues.horizontal.forEach(c => {
-        h.innerHTML += `<div class="clue-item"><span class="clue-number">${c.num}.</span>${c.clue}</div>`;
-    });
-
-    clues.vertical.forEach(c => {
-        v.innerHTML += `<div class="clue-item"><span class="clue-number">${c.num}.</span>${c.clue}</div>`;
-    });
+/* === TEST BUTTON === */
+function fillTest() {
+  document.querySelectorAll("input").forEach(i => i.value = i.dataset.solution);
+  autoCheck();
 }
-
-function checkAnswers() {
-    const inputs = document.querySelectorAll('.cell input');
-    let correct = 0;
-
-    inputs.forEach(i => {
-        if (i.value === i.dataset.answer) {
-            i.parentElement.classList.add('correct');
-            i.parentElement.classList.remove('incorrect');
-            correct++;
-        } else if (i.value === '') {
-            i.parentElement.classList.remove('correct', 'incorrect');
-        } else {
-            i.parentElement.classList.add('incorrect');
-            i.parentElement.classList.remove('correct');
-        }
-    });
-
-    if (correct === inputs.length) {
-        document.getElementById('resultOverlay').classList.add('show');
-    }
-}
-
-initGrid();
-renderGrid();
-renderClues();
 </script>
+
 </body>
 </html>
