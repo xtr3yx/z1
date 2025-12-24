@@ -1,386 +1,170 @@
-import React, { useState, useEffect } from 'react';
-import { RotateCcw, Trophy, ArrowRight } from 'lucide-react';
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Gym Games</title>
 
-const GymGames = () => {
-  const [gameStage, setGameStage] = useState(1); // 1 = memory, 2 = matching, 3 = victory
-  
-  // Gra 1: Memory
-  const [cards, setCards] = useState([]);
-  const [flipped, setFlipped] = useState([]);
-  const [matched, setMatched] = useState([]);
-  const [moves, setMoves] = useState(0);
-  const [memoryComplete, setMemoryComplete] = useState(false);
+  <!-- React -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 
-  // Gra 2: Dopasowanie
-  const [selectedExercise, setSelectedExercise] = useState(null);
-  const [correctMatches, setCorrectMatches] = useState([]);
-  const [wrongAttempts, setWrongAttempts] = useState(0);
+  <!-- Babel -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-  const patterns = [
-    { id: 1, type: 'exercise', content: '🏋️\nPRZYSIADY', color: '#DC2626' },
-    { id: 2, type: 'exercise', content: '💪\nPOMPKI', color: '#EA580C' },
-    { id: 3, type: 'exercise', content: '🦵\nMARTWY CIĄG', color: '#CA8A04' },
-    { id: 4, type: 'exercise', content: '🏃\nBIEŻNIA', color: '#65A30D' },
-    { id: 5, type: 'exercise', content: '🤸\nBURPEES', color: '#059669' },
-    { id: 6, type: 'equipment', content: '🏋️\nSZTANGA', color: '#0891B2' },
-    { id: 7, type: 'equipment', content: '⚖️\nHANTLE', color: '#0284C7' },
-    { id: 8, type: 'equipment', content: '🔗\nKETTLEBELL', color: '#2563EB' },
-    { id: 9, type: 'muscle', content: '💪\nBICEPS', color: '#4F46E5' },
-    { id: 10, type: 'muscle', content: '🦾\nTRICEPS', color: '#7C3AED' },
-    { id: 11, type: 'muscle', content: '🫀\nKLATKA', color: '#A21CAF' },
-    { id: 12, type: 'muscle', content: '🦴\nPLECY', color: '#BE185D' },
-    { id: 13, type: 'exercise', content: '🧗\nPODCIĄGANIE', color: '#DB2777' },
-    { id: 14, type: 'equipment', content: '🎯\nBALANCE BALL', color: '#4338CA' },
-    { id: 15, type: 'exercise', content: '🏋️\nWYCISKANIE', color: '#7C3AED' }
-  ];
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-  const exerciseMuscleMatches = [
-    { exercise: '💪 POMPKI', muscle: '🫀 KLATKA', exerciseId: 1 },
-    { exercise: '🏋️ PRZYSIADY', muscle: '🦵 NOGI', exerciseId: 2 },
-    { exercise: '🧗 PODCIĄGANIE', muscle: '🦴 PLECY', exerciseId: 3 },
-    { exercise: '🏋️ WYCISKANIE', muscle: '🫀 KLATKA', exerciseId: 4 },
-    { exercise: '⚖️ UGINANIE', muscle: '💪 BICEPS', exerciseId: 5 },
-    { exercise: '🔗 FRENCH PRESS', muscle: '🦾 TRICEPS', exerciseId: 6 },
-  ];
+  <!-- Lucide -->
+  <script src="https://unpkg.com/lucide-react@latest/dist/umd/lucide-react.js"></script>
+</head>
 
-  useEffect(() => {
-    initializeMemory();
-  }, []);
+<body class="bg-gray-900">
+  <div id="root"></div>
 
-  const initializeMemory = () => {
-    const duplicatedCards = [...patterns, ...patterns].map((pattern, index) => ({
-      ...pattern,
-      uniqueId: index,
-    }));
-    const shuffled = duplicatedCards.sort(() => Math.random() - 0.5);
-    setCards(shuffled);
-    setFlipped([]);
-    setMatched([]);
-    setMoves(0);
-    setMemoryComplete(false);
-  };
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+    const { RotateCcw, Trophy, ArrowRight } = lucideReact;
 
-  const handleCardClick = (index) => {
-    if (flipped.includes(index) || matched.includes(index) || flipped.length === 2) {
-      return;
-    }
+    const GymGames = () => {
+      const [gameStage, setGameStage] = useState(1);
+      const [cards, setCards] = useState([]);
+      const [flipped, setFlipped] = useState([]);
+      const [matched, setMatched] = useState([]);
+      const [moves, setMoves] = useState(0);
+      const [memoryComplete, setMemoryComplete] = useState(false);
 
-    const newFlipped = [...flipped, index];
-    setFlipped(newFlipped);
+      const [selectedExercise, setSelectedExercise] = useState(null);
+      const [correctMatches, setCorrectMatches] = useState([]);
+      const [wrongAttempts, setWrongAttempts] = useState(0);
 
-    if (newFlipped.length === 2) {
-      setMoves(moves + 1);
-      const [first, second] = newFlipped;
-      
-      if (cards[first].id === cards[second].id) {
-        setTimeout(() => {
-          const newMatched = [...matched, first, second];
-          setMatched(newMatched);
-          setFlipped([]);
-          
-          if (newMatched.length === cards.length) {
-            setMemoryComplete(true);
-          }
-        }, 500);
-      } else {
-        setTimeout(() => {
-          setFlipped([]);
-        }, 1000);
-      }
-    }
-  };
+      const patterns = [
+        { id: 1, content: '🏋️\nPRZYSIADY', color: '#DC2626' },
+        { id: 2, content: '💪\nPOMPKI', color: '#EA580C' },
+        { id: 3, content: '🦵\nMARTWY CIĄG', color: '#CA8A04' },
+        { id: 4, content: '🏃\nBIEŻNIA', color: '#65A30D' },
+        { id: 5, content: '🤸\nBURPEES', color: '#059669' },
+        { id: 6, content: '🏋️\nSZTANGA', color: '#0891B2' },
+        { id: 7, content: '⚖️\nHANTLE', color: '#0284C7' },
+        { id: 8, content: '🔗\nKETTLEBELL', color: '#2563EB' },
+        { id: 9, content: '💪\nBICEPS', color: '#4F46E5' },
+        { id: 10, content: '🦾\nTRICEPS', color: '#7C3AED' },
+        { id: 11, content: '🫀\nKLATKA', color: '#A21CAF' },
+        { id: 12, content: '🦴\nPLECY', color: '#BE185D' },
+        { id: 13, content: '🧗\nPODCIĄGANIE', color: '#DB2777' },
+        { id: 14, content: '🎯\nBALANCE BALL', color: '#4338CA' },
+        { id: 15, content: '🏋️\nWYCISKANIE', color: '#7C3AED' }
+      ];
 
-  const handleExerciseClick = (exercise) => {
-    setSelectedExercise(exercise);
-  };
+      const exerciseMuscleMatches = [
+        { exercise: '💪 POMPKI', muscle: '🫀 KLATKA', id: 1 },
+        { exercise: '🏋️ PRZYSIADY', muscle: '🦵 NOGI', id: 2 },
+        { exercise: '🧗 PODCIĄGANIE', muscle: '🦴 PLECY', id: 3 },
+        { exercise: '🏋️ WYCISKANIE', muscle: '🫀 KLATKA', id: 4 },
+        { exercise: '⚖️ UGINANIE', muscle: '💪 BICEPS', id: 5 },
+        { exercise: '🔗 FRENCH PRESS', muscle: '🦾 TRICEPS', id: 6 },
+      ];
 
-  const handleMuscleClick = (muscle) => {
-    if (!selectedExercise) return;
+      useEffect(() => init(), []);
 
-    const match = exerciseMuscleMatches.find(
-      m => m.exercise === selectedExercise && m.muscle === muscle
-    );
+      const init = () => {
+        const d = [...patterns, ...patterns].map((c, i) => ({ ...c, uid: i }));
+        setCards(d.sort(() => Math.random() - 0.5));
+        setFlipped([]);
+        setMatched([]);
+        setMoves(0);
+        setMemoryComplete(false);
+      };
 
-    if (match && !correctMatches.includes(match.exerciseId)) {
-      setCorrectMatches([...correctMatches, match.exerciseId]);
-      setSelectedExercise(null);
-      
-      if (correctMatches.length + 1 === exerciseMuscleMatches.length) {
-        setTimeout(() => {
-          setGameStage(3);
-        }, 500);
-      }
-    } else {
-      setWrongAttempts(wrongAttempts + 1);
-      setSelectedExercise(null);
-    }
-  };
+      const clickCard = (i) => {
+        if (flipped.includes(i) || matched.includes(i) || flipped.length === 2) return;
+        const f = [...flipped, i];
+        setFlipped(f);
+        if (f.length === 2) {
+          setMoves(m => m + 1);
+          if (cards[f[0]].id === cards[f[1]].id) {
+            setTimeout(() => {
+              const m = [...matched, ...f];
+              setMatched(m);
+              setFlipped([]);
+              if (m.length === cards.length) setMemoryComplete(true);
+            }, 500);
+          } else setTimeout(() => setFlipped([]), 900);
+        }
+      };
 
-  const goToMatchingGame = () => {
-    setGameStage(2);
-    setCorrectMatches([]);
-    setWrongAttempts(0);
-    setSelectedExercise(null);
-  };
-
-  const resetAllGames = () => {
-    setGameStage(1);
-    initializeMemory();
-    setCorrectMatches([]);
-    setWrongAttempts(0);
-    setSelectedExercise(null);
-  };
-
-  const renderCardContent = (card) => {
-    return (
-      <div className="text-center flex flex-col items-center justify-center gap-1">
-        <div className="text-3xl leading-none whitespace-pre-line">
-          {card.content}
-        </div>
-      </div>
-    );
-  };
-
-  // Gra 1: Memory
-  if (gameStage === 1) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-600 via-pink-500 to-red-500 p-4 flex items-center justify-center">
-        <div className="bg-white rounded-2xl shadow-2xl p-6 max-w-6xl w-full">
-          <div className="text-center mb-6">
-            <div className="text-sm font-bold text-purple-600 mb-2">GRA 1 z 2</div>
-            <h1 className="text-4xl font-bold text-gray-800 mb-2">
-              💪 Memory - Siłownia!
-            </h1>
-            <p className="text-gray-600 text-lg">
-              Znajdź wszystkie 15 par związanych z treningiem
-            </p>
-          </div>
-
-          <div className="flex justify-between items-center mb-6 bg-gradient-to-r from-indigo-100 to-purple-100 p-4 rounded-xl">
-            <div className="text-xl font-semibold text-gray-700">
-              Ruchy: <span className="text-indigo-600 text-2xl">{moves}</span>
-            </div>
-            <div className="text-xl font-semibold text-gray-700">
-              Pary: <span className="text-purple-600 text-2xl">{matched.length / 2}/15</span>
-            </div>
-            <button
-              onClick={initializeMemory}
-              className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg transition-colors shadow-lg font-semibold"
-            >
-              <RotateCcw size={20} />
-              Reset
-            </button>
-          </div>
-
-          <div className="grid grid-cols-6 gap-3 mb-6">
-            {cards.map((card, index) => {
-              const isFlipped = flipped.includes(index) || matched.includes(index);
-              const isMatched = matched.includes(index);
-              
-              return (
-                <div
-                  key={card.uniqueId}
-                  onClick={() => handleCardClick(index)}
-                  className={`
-                    aspect-square cursor-pointer rounded-xl transition-all duration-300 transform
-                    ${isFlipped ? 'scale-105' : 'hover:scale-105'}
-                    ${isMatched ? 'opacity-50' : ''}
-                  `}
-                >
-                  <div className="relative w-full h-full">
-                    {!isFlipped ? (
-                      <div
-                        className="absolute w-full h-full rounded-xl flex items-center justify-center shadow-lg transition-all"
-                        style={{
-                          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-                        }}
-                      >
-                        <div className="text-6xl">❓</div>
-                      </div>
-                    ) : (
-                      <div
-                        className="absolute w-full h-full rounded-xl flex items-center justify-center shadow-lg text-white font-bold transition-all"
-                        style={{
-                          backgroundColor: card.color
-                        }}
-                      >
-                        {renderCardContent(card)}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {memoryComplete && (
-            <div className="bg-gradient-to-r from-green-400 to-emerald-500 rounded-2xl p-6 text-center shadow-2xl">
-              <p className="text-4xl font-bold text-white mb-3">
-                🎉 Ukończono grę 1! 🎉
-              </p>
-              <p className="text-white text-xl mb-4">
-                Znalazłeś wszystkie pary! Teraz czas na drugą grę.
-              </p>
-              <button
-                onClick={goToMatchingGame}
-                className="flex items-center gap-2 bg-white text-green-600 px-8 py-4 rounded-lg transition-colors shadow-lg font-bold text-xl mx-auto hover:bg-green-50"
-              >
-                Gra 2 - Dopasuj ćwiczenia
-                <ArrowRight size={24} />
-              </button>
-            </div>
-          )}
-
-          <div className="text-center text-gray-600 bg-blue-50 rounded-xl p-4 mt-4">
-            <p className="font-medium text-lg">
-              💡 Kliknij na kartę, aby ją odwrócić. Znajdź dwie jednakowe karty!
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Gra 2: Dopasowanie ćwiczeń do mięśni
-  if (gameStage === 2) {
-    const exercises = exerciseMuscleMatches.map(m => m.exercise);
-    const muscles = ['🫀 KLATKA', '🦵 NOGI', '🦴 PLECY', '💪 BICEPS', '🦾 TRICEPS'];
-
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-600 via-indigo-500 to-purple-600 p-4 flex items-center justify-center">
-        <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-5xl w-full">
-          <div className="text-center mb-6">
-            <div className="text-sm font-bold text-blue-600 mb-2">GRA 2 z 2</div>
-            <h1 className="text-4xl font-bold text-gray-800 mb-2">
-              🎯 Dopasuj Ćwiczenie do Mięśnia
-            </h1>
-            <p className="text-gray-600 text-lg">
-              Kliknij ćwiczenie, potem mięsień który trenuje
-            </p>
-          </div>
-
-          <div className="flex justify-between items-center mb-6 bg-gradient-to-r from-blue-100 to-indigo-100 p-4 rounded-xl">
-            <div className="text-xl font-semibold text-gray-700">
-              Poprawne: <span className="text-green-600 text-2xl">{correctMatches.length}/6</span>
-            </div>
-            <div className="text-xl font-semibold text-gray-700">
-              Błędy: <span className="text-red-600 text-2xl">{wrongAttempts}</span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-8 mb-6">
-            {/* Ćwiczenia */}
-            <div>
-              <h2 className="text-2xl font-bold text-center mb-4 text-gray-700">Ćwiczenia</h2>
-              <div className="space-y-3">
-                {exercises.map((exercise, idx) => {
-                  const matchId = exerciseMuscleMatches[idx].exerciseId;
-                  const isMatched = correctMatches.includes(matchId);
-                  const isSelected = selectedExercise === exercise;
-                  
+      if (gameStage === 1) {
+        return (
+          <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 via-pink-500 to-red-500 p-4">
+            <div className="bg-white p-6 rounded-2xl max-w-6xl w-full">
+              <h1 className="text-4xl font-bold text-center mb-4">💪 Memory – Siłownia</h1>
+              <div className="grid grid-cols-6 gap-3">
+                {cards.map((c, i) => {
+                  const open = flipped.includes(i) || matched.includes(i);
                   return (
-                    <button
-                      key={idx}
-                      onClick={() => !isMatched && handleExerciseClick(exercise)}
-                      disabled={isMatched}
-                      className={`
-                        w-full p-4 rounded-xl text-xl font-bold transition-all transform
-                        ${isMatched 
-                          ? 'bg-green-200 text-green-800 cursor-not-allowed opacity-50' 
-                          : isSelected
-                            ? 'bg-blue-500 text-white scale-105 shadow-xl'
-                            : 'bg-gradient-to-r from-orange-400 to-red-500 text-white hover:scale-105 shadow-lg cursor-pointer'
-                        }
-                      `}
-                    >
-                      {exercise}
-                    </button>
+                    <div key={c.uid} onClick={() => clickCard(i)}
+                      className="aspect-square cursor-pointer rounded-xl shadow-lg flex items-center justify-center text-white text-2xl font-bold"
+                      style={{ background: open ? c.color : '#6366F1' }}>
+                      {open ? c.content : '❓'}
+                    </div>
                   );
                 })}
               </div>
+              {memoryComplete && (
+                <button onClick={() => setGameStage(2)}
+                  className="mt-6 block mx-auto bg-green-500 text-white px-6 py-3 rounded-xl text-xl">
+                  Gra 2 →
+                </button>
+              )}
             </div>
+          </div>
+        );
+      }
 
-            {/* Mięśnie */}
-            <div>
-              <h2 className="text-2xl font-bold text-center mb-4 text-gray-700">Partie mięśniowe</h2>
-              <div className="space-y-3">
-                {muscles.map((muscle, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => handleMuscleClick(muscle)}
-                    disabled={!selectedExercise}
-                    className={`
-                      w-full p-4 rounded-xl text-xl font-bold transition-all transform
-                      ${!selectedExercise
-                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        : 'bg-gradient-to-r from-purple-400 to-pink-500 text-white hover:scale-105 shadow-lg cursor-pointer'
-                      }
-                    `}
-                  >
-                    {muscle}
+      if (gameStage === 2) {
+        const muscles = ['🫀 KLATKA', '🦵 NOGI', '🦴 PLECY', '💪 BICEPS', '🦾 TRICEPS'];
+        return (
+          <div className="min-h-screen flex items-center justify-center bg-indigo-600 p-6">
+            <div className="bg-white p-8 rounded-2xl w-full max-w-4xl grid grid-cols-2 gap-6">
+              <div>
+                {exerciseMuscleMatches.map(e => (
+                  <button key={e.id} onClick={() => setSelectedExercise(e.exercise)}
+                    className="block w-full mb-3 bg-orange-500 text-white p-3 rounded-xl">
+                    {e.exercise}
+                  </button>
+                ))}
+              </div>
+              <div>
+                {muscles.map(m => (
+                  <button key={m} onClick={() => {
+                    const ok = exerciseMuscleMatches.find(e => e.exercise === selectedExercise && e.muscle === m);
+                    ok ? setCorrectMatches([...correctMatches, ok.id]) : setWrongAttempts(w => w + 1);
+                    if (correctMatches.length + 1 === 6) setGameStage(3);
+                  }}
+                    className="block w-full mb-3 bg-purple-500 text-white p-3 rounded-xl">
+                    {m}
                   </button>
                 ))}
               </div>
             </div>
           </div>
+        );
+      }
 
-          <div className="text-center text-gray-600 bg-yellow-50 rounded-xl p-4 border-2 border-yellow-300">
-            <p className="font-medium text-lg">
-              💡 <strong>Instrukcja:</strong> Najpierw kliknij ćwiczenie, potem kliknij mięsień który ono trenuje
-            </p>
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-yellow-400">
+          <div className="bg-white p-12 rounded-2xl text-center">
+            <div className="text-[150px] font-black text-indigo-700">9</div>
+            <h1 className="text-4xl font-bold">GRATULACJE 🎉</h1>
+            <button onClick={() => { setGameStage(1); init(); }}
+              className="mt-6 bg-indigo-600 text-white px-6 py-3 rounded-xl">
+              Restart
+            </button>
           </div>
         </div>
-      </div>
-    );
-  }
+      );
+    };
 
-  // Gra 3: Zwycięstwo z liczbą 9
-  if (gameStage === 3) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-yellow-400 via-orange-500 to-red-500 p-4 flex items-center justify-center">
-        <div className="bg-white rounded-2xl shadow-2xl p-12 max-w-3xl w-full text-center">
-          <div className="flex justify-center mb-8">
-            <div className="font-black text-indigo-600 leading-none animate-bounce" style={{
-              fontSize: '150px',
-              textShadow: '6px 6px 0px #1E1B4B, 10px 10px 20px rgba(0,0,0,0.3)',
-              WebkitTextStroke: '4px #1E1B4B'
-            }}>
-              9
-            </div>
-          </div>
-          
-          <p className="text-6xl font-bold text-gray-800 mb-4">
-            🎉 GRATULACJE! 🎉
-          </p>
-          <p className="text-3xl text-gray-700 mb-3 font-bold">
-            Odkryłeś liczbę 9!
-          </p>
-          <p className="text-xl text-gray-600 mb-6">
-            Ukończyłeś obie gry! Jesteś mistrzem! 💪
-          </p>
-          
-          <div className="flex justify-center gap-4 mb-6">
-            <Trophy className="text-yellow-500 animate-pulse" size={64} />
-            <Trophy className="text-yellow-500 animate-pulse" size={64} />
-          </div>
-
-          <div className="bg-gradient-to-r from-indigo-100 to-purple-100 rounded-xl p-6 mb-6">
-            <p className="text-2xl font-bold text-gray-700 mb-2">📊 Twoje statystyki:</p>
-            <p className="text-xl text-gray-600">Memory - Ruchy: {moves}</p>
-            <p className="text-xl text-gray-600">Dopasowanie - Błędy: {wrongAttempts}</p>
-          </div>
-
-          <button
-            onClick={resetAllGames}
-            className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-4 rounded-xl transition-colors shadow-lg font-bold text-xl mx-auto"
-          >
-            <RotateCcw size={24} />
-            Zagraj ponownie
-          </button>
-        </div>
-      </div>
-    );
-  }
-};
-
-export default GymGames;
+    ReactDOM.createRoot(document.getElementById("root")).render(<GymGames />);
+  </script>
+</body>
+</html>
