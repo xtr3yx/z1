@@ -13,9 +13,6 @@
 
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Lucide -->
-  <script src="https://unpkg.com/lucide-react@latest/dist/umd/lucide-react.js"></script>
 </head>
 
 <body class="bg-gray-900">
@@ -23,96 +20,83 @@
 
   <script type="text/babel">
     const { useState, useEffect } = React;
-    const { RotateCcw, Trophy, ArrowRight } = lucideReact;
 
-    const GymGames = () => {
-      const [gameStage, setGameStage] = useState(1);
+    function GymGames() {
+      const [stage, setStage] = useState(1);
       const [cards, setCards] = useState([]);
       const [flipped, setFlipped] = useState([]);
       const [matched, setMatched] = useState([]);
       const [moves, setMoves] = useState(0);
-      const [memoryComplete, setMemoryComplete] = useState(false);
-
-      const [selectedExercise, setSelectedExercise] = useState(null);
-      const [correctMatches, setCorrectMatches] = useState([]);
-      const [wrongAttempts, setWrongAttempts] = useState(0);
 
       const patterns = [
-        { id: 1, content: '🏋️\nPRZYSIADY', color: '#DC2626' },
-        { id: 2, content: '💪\nPOMPKI', color: '#EA580C' },
-        { id: 3, content: '🦵\nMARTWY CIĄG', color: '#CA8A04' },
-        { id: 4, content: '🏃\nBIEŻNIA', color: '#65A30D' },
-        { id: 5, content: '🤸\nBURPEES', color: '#059669' },
-        { id: 6, content: '🏋️\nSZTANGA', color: '#0891B2' },
-        { id: 7, content: '⚖️\nHANTLE', color: '#0284C7' },
-        { id: 8, content: '🔗\nKETTLEBELL', color: '#2563EB' },
-        { id: 9, content: '💪\nBICEPS', color: '#4F46E5' },
-        { id: 10, content: '🦾\nTRICEPS', color: '#7C3AED' },
-        { id: 11, content: '🫀\nKLATKA', color: '#A21CAF' },
-        { id: 12, content: '🦴\nPLECY', color: '#BE185D' },
-        { id: 13, content: '🧗\nPODCIĄGANIE', color: '#DB2777' },
-        { id: 14, content: '🎯\nBALANCE BALL', color: '#4338CA' },
-        { id: 15, content: '🏋️\nWYCISKANIE', color: '#7C3AED' }
-      ];
-
-      const exerciseMuscleMatches = [
-        { exercise: '💪 POMPKI', muscle: '🫀 KLATKA', id: 1 },
-        { exercise: '🏋️ PRZYSIADY', muscle: '🦵 NOGI', id: 2 },
-        { exercise: '🧗 PODCIĄGANIE', muscle: '🦴 PLECY', id: 3 },
-        { exercise: '🏋️ WYCISKANIE', muscle: '🫀 KLATKA', id: 4 },
-        { exercise: '⚖️ UGINANIE', muscle: '💪 BICEPS', id: 5 },
-        { exercise: '🔗 FRENCH PRESS', muscle: '🦾 TRICEPS', id: 6 },
+        { id: 1, t: "🏋️ PRZYSIADY", c: "#DC2626" },
+        { id: 2, t: "💪 POMPKI", c: "#EA580C" },
+        { id: 3, t: "🦵 MARTWY CIĄG", c: "#CA8A04" },
+        { id: 4, t: "🏃 BIEŻNIA", c: "#65A30D" },
+        { id: 5, t: "🤸 BURPEES", c: "#059669" },
+        { id: 6, t: "🏋️ SZTANGA", c: "#0891B2" },
+        { id: 7, t: "⚖️ HANTLE", c: "#0284C7" },
+        { id: 8, t: "🔗 KETTLEBELL", c: "#2563EB" }
       ];
 
       useEffect(() => init(), []);
 
-      const init = () => {
-        const d = [...patterns, ...patterns].map((c, i) => ({ ...c, uid: i }));
-        setCards(d.sort(() => Math.random() - 0.5));
+      function init() {
+        const d = [...patterns, ...patterns]
+          .map((c, i) => ({ ...c, u: i }))
+          .sort(() => Math.random() - 0.5);
+        setCards(d);
         setFlipped([]);
         setMatched([]);
         setMoves(0);
-        setMemoryComplete(false);
-      };
+      }
 
-      const clickCard = (i) => {
+      function clickCard(i) {
         if (flipped.includes(i) || matched.includes(i) || flipped.length === 2) return;
         const f = [...flipped, i];
         setFlipped(f);
+
         if (f.length === 2) {
           setMoves(m => m + 1);
-          if (cards[f[0]].id === cards[f[1]].id) {
+          const [a, b] = f;
+          if (cards[a].id === cards[b].id) {
             setTimeout(() => {
-              const m = [...matched, ...f];
-              setMatched(m);
+              setMatched(m => [...m, a, b]);
               setFlipped([]);
-              if (m.length === cards.length) setMemoryComplete(true);
-            }, 500);
-          } else setTimeout(() => setFlipped([]), 900);
+            }, 400);
+          } else {
+            setTimeout(() => setFlipped([]), 700);
+          }
         }
-      };
+      }
 
-      if (gameStage === 1) {
+      /* ===== GRA 1 ===== */
+      if (stage === 1) {
         return (
-          <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 via-pink-500 to-red-500 p-4">
-            <div className="bg-white p-6 rounded-2xl max-w-6xl w-full">
-              <h1 className="text-4xl font-bold text-center mb-4">💪 Memory – Siłownia</h1>
-              <div className="grid grid-cols-6 gap-3">
+          <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 to-pink-600 p-4">
+            <div className="bg-white p-6 rounded-2xl max-w-4xl w-full">
+              <h1 className="text-3xl font-bold text-center mb-4">💪 Memory – Siłownia</h1>
+              <p className="text-center mb-2">Ruchy: <b>{moves}</b></p>
+
+              <div className="grid grid-cols-4 gap-3">
                 {cards.map((c, i) => {
                   const open = flipped.includes(i) || matched.includes(i);
                   return (
-                    <div key={c.uid} onClick={() => clickCard(i)}
-                      className="aspect-square cursor-pointer rounded-xl shadow-lg flex items-center justify-center text-white text-2xl font-bold"
-                      style={{ background: open ? c.color : '#6366F1' }}>
-                      {open ? c.content : '❓'}
+                    <div key={c.u}
+                      onClick={() => clickCard(i)}
+                      className="aspect-square rounded-xl cursor-pointer flex items-center justify-center text-white font-bold text-xl"
+                      style={{ background: open ? c.c : "#6366F1" }}>
+                      {open ? c.t : "❓"}
                     </div>
                   );
                 })}
               </div>
-              {memoryComplete && (
-                <button onClick={() => setGameStage(2)}
-                  className="mt-6 block mx-auto bg-green-500 text-white px-6 py-3 rounded-xl text-xl">
-                  Gra 2 →
+
+              {matched.length === cards.length && (
+                <button
+                  onClick={() => setStage(2)}
+                  className="mt-6 mx-auto block bg-green-500 text-white px-6 py-3 rounded-xl text-xl">
+                  Gra 2 ➡️
                 </button>
               )}
             </div>
@@ -120,49 +104,24 @@
         );
       }
 
-      if (gameStage === 2) {
-        const muscles = ['🫀 KLATKA', '🦵 NOGI', '🦴 PLECY', '💪 BICEPS', '🦾 TRICEPS'];
+      /* ===== GRA 2 ===== */
+      if (stage === 2) {
         return (
-          <div className="min-h-screen flex items-center justify-center bg-indigo-600 p-6">
-            <div className="bg-white p-8 rounded-2xl w-full max-w-4xl grid grid-cols-2 gap-6">
-              <div>
-                {exerciseMuscleMatches.map(e => (
-                  <button key={e.id} onClick={() => setSelectedExercise(e.exercise)}
-                    className="block w-full mb-3 bg-orange-500 text-white p-3 rounded-xl">
-                    {e.exercise}
-                  </button>
-                ))}
-              </div>
-              <div>
-                {muscles.map(m => (
-                  <button key={m} onClick={() => {
-                    const ok = exerciseMuscleMatches.find(e => e.exercise === selectedExercise && e.muscle === m);
-                    ok ? setCorrectMatches([...correctMatches, ok.id]) : setWrongAttempts(w => w + 1);
-                    if (correctMatches.length + 1 === 6) setGameStage(3);
-                  }}
-                    className="block w-full mb-3 bg-purple-500 text-white p-3 rounded-xl">
-                    {m}
-                  </button>
-                ))}
-              </div>
+          <div className="min-h-screen flex items-center justify-center bg-indigo-600">
+            <div className="bg-white p-10 rounded-2xl text-center">
+              <h1 className="text-4xl font-bold mb-4">🎉 GRATULACJE</h1>
+              <p className="text-xl mb-6">Ukończyłeś gry</p>
+              <div className="text-[120px] font-black text-indigo-700">9</div>
+              <button
+                onClick={() => { setStage(1); init(); }}
+                className="mt-6 bg-indigo-600 text-white px-6 py-3 rounded-xl">
+                🔄 Zagraj ponownie
+              </button>
             </div>
           </div>
         );
       }
-
-      return (
-        <div className="min-h-screen flex items-center justify-center bg-yellow-400">
-          <div className="bg-white p-12 rounded-2xl text-center">
-            <div className="text-[150px] font-black text-indigo-700">9</div>
-            <h1 className="text-4xl font-bold">GRATULACJE 🎉</h1>
-            <button onClick={() => { setGameStage(1); init(); }}
-              className="mt-6 bg-indigo-600 text-white px-6 py-3 rounded-xl">
-              Restart
-            </button>
-          </div>
-        </div>
-      );
-    };
+    }
 
     ReactDOM.createRoot(document.getElementById("root")).render(<GymGames />);
   </script>
